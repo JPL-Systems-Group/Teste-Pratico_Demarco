@@ -15,8 +15,6 @@ public class User
     [BsonElement("email")]
     public string Email { get; set; } = string.Empty;
 
-    // DECISION: Password is stored as BCrypt hash (work factor 12).
-    // Plain-text password is never persisted.
     [BsonElement("passwordHash")]
     public string PasswordHash { get; set; } = string.Empty;
 

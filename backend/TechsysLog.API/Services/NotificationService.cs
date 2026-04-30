@@ -18,8 +18,6 @@ public class NotificationService
         _hub = hub;
     }
 
-    // Creates one notification document per registered user and broadcasts
-    // to all SignalR-connected clients so the panel updates in real time.
     public async Task BroadcastEventAsync(NotificationType type, string message, string referenceId)
     {
         var users = await _db.Users.Find(_ => true).ToListAsync();
@@ -37,11 +35,6 @@ public class NotificationService
         if (notifications.Count > 0)
             await _db.Notifications.InsertManyAsync(notifications);
 
-        // Broadcast to ALL connected clients regardless of user;
-        // each client will show the notification in its panel.
-        // DECISION: A group-per-user strategy was considered but skipped
-        // because this is an internal operations panel — all operators
-        // should see all events in real time.
         await _hub.Clients.All.SendAsync("ReceiveNotification", new
         {
             type = type.ToString(),

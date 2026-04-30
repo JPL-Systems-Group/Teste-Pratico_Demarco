@@ -21,11 +21,6 @@ public class DeliveriesController : ControllerBase
         _notificationService = notificationService;
     }
 
-    /// <summary>
-    /// Register a delivery for an existing order.
-    /// Automatically transitions the order status to Delivered
-    /// and triggers a real-time notification to all connected users.
-    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(DeliveryResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

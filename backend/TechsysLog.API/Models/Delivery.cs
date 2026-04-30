@@ -12,7 +12,6 @@ public class Delivery
     [BsonElement("orderId")]
     public string OrderId { get; set; } = string.Empty;
 
-    // OrderNumber is denormalized here for quick lookups without joining.
     [BsonElement("orderNumber")]
     public string OrderNumber { get; set; } = string.Empty;
 

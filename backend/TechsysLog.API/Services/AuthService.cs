@@ -28,7 +28,7 @@ public class AuthService
             .FirstOrDefaultAsync();
 
         if (existing is not null)
-            throw new InvalidOperationException("E-mail already registered.");
+            throw new InvalidOperationException("E-mail já cadastrado.");
 
         var user = new User
         {
@@ -48,7 +48,6 @@ public class AuthService
             .Find(u => u.Email == request.Email.ToLower())
             .FirstOrDefaultAsync();
 
-        // Mensagem genérica para evitar enumeração de usuários (user enumeration attack)
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
 
