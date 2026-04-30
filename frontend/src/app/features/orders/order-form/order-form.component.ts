@@ -26,79 +26,78 @@ import { OrderService } from '../../../core/services/order.service';
     <div class="page-container">
       <mat-toolbar color="primary">
         <button mat-icon-button routerLink="/orders"><mat-icon>arrow_back</mat-icon></button>
-        <span>New Order</span>
+        <span>Novo Pedido</span>
       </mat-toolbar>
 
       <div class="content">
         <mat-card class="form-card">
           <mat-card-content>
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
-              <h3>Order Details</h3>
+              <h3>Dados do Pedido</h3>
               <div class="row">
                 <mat-form-field appearance="outline" class="col">
-                  <mat-label>Order Number</mat-label>
+                  <mat-label>Número do Pedido</mat-label>
                   <input matInput formControlName="orderNumber">
-                  <mat-error>Required</mat-error>
+                  <mat-error>Obrigatório</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col">
-                  <mat-label>Value (R$)</mat-label>
+                  <mat-label>Valor (R$)</mat-label>
                   <input matInput type="number" formControlName="value" min="0.01">
-                  <mat-error>Must be greater than zero</mat-error>
+                  <mat-error>Deve ser maior que zero</mat-error>
                 </mat-form-field>
               </div>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Description</mat-label>
+                <mat-label>Descrição</mat-label>
                 <textarea matInput formControlName="description" rows="3"></textarea>
-                <mat-error>Required</mat-error>
+                <mat-error>Obrigatório</mat-error>
               </mat-form-field>
 
-              <h3>Delivery Address</h3>
+              <h3>Endereço de Entrega</h3>
               <div formGroupName="address">
                 <div class="row">
                   <mat-form-field appearance="outline" class="col-small">
                     <mat-label>CEP</mat-label>
-                    <!-- maxlength=9 allows NNNNN-NNN (8 digits + 1 dash per ViaCEP spec) -->
                     <input matInput formControlName="cep" placeholder="00000-000"
                            maxlength="9" (input)="onCepInput($event)">
-                    <mat-hint *ngIf="cepLoading">Looking up CEP...</mat-hint>
-                    <mat-error *ngIf="form.get('address.cep')?.hasError('required')">Required</mat-error>
-                    <mat-error *ngIf="form.get('address.cep')?.hasError('pattern')">Invalid CEP (use 00000-000)</mat-error>
+                    <mat-hint *ngIf="cepLoading">Buscando CEP...</mat-hint>
+                    <mat-error *ngIf="form.get('address.cep')?.hasError('required')">Obrigatório</mat-error>
+                    <mat-error *ngIf="form.get('address.cep')?.hasError('pattern')">CEP inválido (use 00000-000)</mat-error>
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="col-large">
-                    <mat-label>Street</mat-label>
+                    <mat-label>Rua</mat-label>
                     <input matInput formControlName="street">
-                    <mat-error>Required</mat-error>
+                    <mat-error>Obrigatório</mat-error>
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="col-small">
-                    <mat-label>Number</mat-label>
+                    <mat-label>Número</mat-label>
                     <input matInput formControlName="number">
-                    <mat-error>Required</mat-error>
+                    <mat-error>Obrigatório</mat-error>
                   </mat-form-field>
                 </div>
                 <div class="row">
                   <mat-form-field appearance="outline" class="col">
-                    <mat-label>Neighborhood</mat-label>
+                    <mat-label>Bairro</mat-label>
                     <input matInput formControlName="neighborhood">
-                    <mat-error>Required</mat-error>
+                    <mat-error>Obrigatório</mat-error>
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="col">
-                    <mat-label>City</mat-label>
+                    <mat-label>Cidade</mat-label>
                     <input matInput formControlName="city">
-                    <mat-error>Required</mat-error>
+                    <mat-error>Obrigatório</mat-error>
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="col-small">
-                    <mat-label>State</mat-label>
+                    <mat-label>Estado</mat-label>
                     <input matInput formControlName="state" maxlength="2">
-                    <mat-error>Required</mat-error>
+                    <mat-error>Obrigatório</mat-error>
                   </mat-form-field>
                 </div>
               </div>
 
               <div class="actions">
-                <button mat-button type="button" routerLink="/orders">Cancel</button>
+                <button mat-button type="button" routerLink="/orders">Cancelar</button>
                 <button mat-raised-button color="primary" type="submit" [disabled]="loading">
                   <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-                  <span *ngIf="!loading">Save Order</span>
+                  <span *ngIf="!loading">Salvar Pedido</span>
                 </button>
               </div>
             </form>
@@ -145,25 +144,20 @@ export class OrderFormComponent {
       })
     });
 
-    // Trigger lookup after user stops typing for 400ms with a fully formatted CEP
     this.form.get('address.cep')!.valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged()
     ).subscribe(cep => this.lookupCep(cep));
   }
 
-  // Auto-formats digits as NNNNN-NNN while the user types
   onCepInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    // Keep only digits
     let digits = input.value.replace(/\D/g, '').slice(0, 8);
-    // Insert dash after the 5th digit
     const formatted = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
     this.form.get('address.cep')!.setValue(formatted, { emitEvent: true });
   }
 
   private lookupCep(cep: string): void {
-    // Only proceed when the full NNNNN-NNN pattern is present
     if (!cep || cep.length !== 9) return;
 
     this.cepLoading = true;
@@ -181,7 +175,7 @@ export class OrderFormComponent {
       },
       error: () => {
         this.cepLoading = false;
-        this.snackBar.open('CEP not found', 'Close', { duration: 2000 });
+        this.snackBar.open('CEP não encontrado', 'Fechar', { duration: 2000 });
       }
     });
   }
@@ -195,12 +189,12 @@ export class OrderFormComponent {
 
     this.orderService.create(this.form.value).subscribe({
       next: () => {
-        this.snackBar.open('Order created successfully!', 'Close', { duration: 3000 });
+        this.snackBar.open('Pedido criado com sucesso!', 'Fechar', { duration: 3000 });
         this.router.navigate(['/orders']);
       },
       error: (err) => {
         this.loading = false;
-        this.snackBar.open(err.error?.message || 'Failed to create order', 'Close', { duration: 3000 });
+        this.snackBar.open(err.error?.message || 'Falha ao criar pedido', 'Fechar', { duration: 3000 });
       }
     });
   }

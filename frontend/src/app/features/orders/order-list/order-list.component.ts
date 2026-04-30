@@ -26,13 +26,13 @@ import { NotificationService } from '../../../core/services/notification.service
   template: `
     <div class="page-container">
       <mat-toolbar color="primary" class="page-toolbar">
-        <span>Orders Dashboard</span>
+        <span>Painel de Pedidos</span>
         <span class="spacer"></span>
         <a mat-stroked-button routerLink="/orders/new" style="margin-right:8px; color:white; border-color:white">
-          <mat-icon>add</mat-icon> New Order
+          <mat-icon>add</mat-icon> Novo Pedido
         </a>
         <a mat-stroked-button routerLink="/deliveries/new" style="color:white; border-color:white">
-          <mat-icon>local_shipping</mat-icon> Register Delivery
+          <mat-icon>local_shipping</mat-icon> Registrar Entrega
         </a>
       </mat-toolbar>
 
@@ -45,38 +45,40 @@ import { NotificationService } from '../../../core/services/notification.service
           <mat-card-content>
             <table mat-table [dataSource]="orders" class="full-width">
               <ng-container matColumnDef="orderNumber">
-                <th mat-header-cell *matHeaderCellDef>Order #</th>
+                <th mat-header-cell *matHeaderCellDef>Nº do Pedido</th>
                 <td mat-cell *matCellDef="let o">{{ o.orderNumber }}</td>
               </ng-container>
               <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <th mat-header-cell *matHeaderCellDef>Descrição</th>
                 <td mat-cell *matCellDef="let o">{{ o.description }}</td>
               </ng-container>
               <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef>Value</th>
+                <th mat-header-cell *matHeaderCellDef>Valor</th>
                 <td mat-cell *matCellDef="let o">{{ o.value | currency:'BRL' }}</td>
               </ng-container>
               <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let o">
                   <mat-chip [class]="o.status === 'Delivered' ? 'chip-delivered' : 'chip-pending'">
-                    {{ o.status }}
+                    {{ statusLabel(o.status) }}
                   </mat-chip>
                 </td>
               </ng-container>
               <ng-container matColumnDef="city">
-                <th mat-header-cell *matHeaderCellDef>City</th>
+                <th mat-header-cell *matHeaderCellDef>Cidade</th>
                 <td mat-cell *matCellDef="let o">{{ o.address.city }} / {{ o.address.state }}</td>
               </ng-container>
               <ng-container matColumnDef="createdAt">
-                <th mat-header-cell *matHeaderCellDef>Created</th>
+                <th mat-header-cell *matHeaderCellDef>Criado em</th>
                 <td mat-cell *matCellDef="let o">{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
               </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <p *ngIf="orders.length === 0" class="empty-state">No orders found. Create the first one!</p>
+            <p *ngIf="orders.length === 0" class="empty-state">
+              Nenhum pedido encontrado. Crie o primeiro!
+            </p>
           </mat-card-content>
         </mat-card>
       </div>
@@ -108,8 +110,6 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadOrders();
-
-    // Refresh table automatically when a real-time event arrives
     this.liveEventSub = this.notificationService.liveEvent$.subscribe(event => {
       if (event) this.loadOrders();
     });
@@ -117,6 +117,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.liveEventSub?.unsubscribe();
+  }
+
+  statusLabel(status: string): string {
+    return status === 'Delivered' ? 'Entregue' : 'Pendente';
   }
 
   loadOrders(): void {
@@ -127,7 +131,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loading = false;
-        this.snackBar.open('Failed to load orders', 'Close', { duration: 3000 });
+        this.snackBar.open('Falha ao carregar pedidos', 'Fechar', { duration: 3000 });
       }
     });
   }

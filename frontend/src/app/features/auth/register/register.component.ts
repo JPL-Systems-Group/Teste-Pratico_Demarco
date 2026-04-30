@@ -23,36 +23,36 @@ import { AuthService } from '../../../core/services/auth.service';
       <mat-card class="auth-card">
         <mat-card-header>
           <mat-card-title>TechsysLog</mat-card-title>
-          <mat-card-subtitle>Create your account</mat-card-subtitle>
+          <mat-card-subtitle>Crie sua conta</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Name</mat-label>
+              <mat-label>Nome</mat-label>
               <input matInput formControlName="name">
-              <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+              <mat-error *ngIf="form.get('name')?.hasError('required')">Nome é obrigatório</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>E-mail</mat-label>
               <input matInput type="email" formControlName="email">
-              <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail is required</mat-error>
-              <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid e-mail</mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('email')">E-mail inválido</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Password</mat-label>
+              <mat-label>Senha</mat-label>
               <input matInput type="password" formControlName="password">
-              <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
-              <mat-error *ngIf="form.get('password')?.hasError('minlength')">Min 6 characters</mat-error>
+              <mat-error *ngIf="form.get('password')?.hasError('required')">Senha é obrigatória</mat-error>
+              <mat-error *ngIf="form.get('password')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
             </mat-form-field>
             <button mat-raised-button color="primary" type="submit"
                     class="full-width" [disabled]="loading">
               <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-              <span *ngIf="!loading">Register</span>
+              <span *ngIf="!loading">Cadastrar</span>
             </button>
           </form>
         </mat-card-content>
         <mat-card-actions>
-          <p class="text-center">Already have an account? <a routerLink="/login">Sign in</a></p>
+          <p class="text-center">Já tem uma conta? <a routerLink="/login">Entrar</a></p>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -90,7 +90,7 @@ export class RegisterComponent {
       next: () => this.router.navigate(['/orders']),
       error: (err) => {
         this.loading = false;
-        this.snackBar.open(err.error?.message || 'Registration failed', 'Close', { duration: 3000 });
+        this.snackBar.open(err.error?.message || 'Falha ao cadastrar', 'Fechar', { duration: 3000 });
       }
     });
   }

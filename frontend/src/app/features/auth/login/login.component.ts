@@ -23,30 +23,30 @@ import { AuthService } from '../../../core/services/auth.service';
       <mat-card class="auth-card">
         <mat-card-header>
           <mat-card-title>TechsysLog</mat-card-title>
-          <mat-card-subtitle>Sign in to your account</mat-card-subtitle>
+          <mat-card-subtitle>Acesse sua conta</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>E-mail</mat-label>
-              <input matInput type="email" formControlName="email" placeholder="you@example.com">
-              <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail is required</mat-error>
-              <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid e-mail</mat-error>
+              <input matInput type="email" formControlName="email" placeholder="voce@exemplo.com">
+              <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('email')">E-mail inválido</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Password</mat-label>
+              <mat-label>Senha</mat-label>
               <input matInput type="password" formControlName="password">
-              <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+              <mat-error *ngIf="form.get('password')?.hasError('required')">Senha é obrigatória</mat-error>
             </mat-form-field>
             <button mat-raised-button color="primary" type="submit"
                     class="full-width" [disabled]="loading">
               <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-              <span *ngIf="!loading">Sign In</span>
+              <span *ngIf="!loading">Entrar</span>
             </button>
           </form>
         </mat-card-content>
         <mat-card-actions>
-          <p class="text-center">Don't have an account? <a routerLink="/register">Register</a></p>
+          <p class="text-center">Não tem uma conta? <a routerLink="/register">Cadastre-se</a></p>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -83,7 +83,7 @@ export class LoginComponent {
       next: () => this.router.navigate(['/orders']),
       error: (err) => {
         this.loading = false;
-        this.snackBar.open(err.error?.message || 'Login failed', 'Close', { duration: 3000 });
+        this.snackBar.open(err.error?.message || 'Falha ao fazer login', 'Fechar', { duration: 3000 });
       }
     });
   }

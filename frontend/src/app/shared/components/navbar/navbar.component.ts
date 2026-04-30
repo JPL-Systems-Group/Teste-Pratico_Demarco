@@ -38,11 +38,11 @@ import { Notification } from '../../../core/models/notification.model';
 
       <mat-menu #notifMenu="matMenu">
         <div class="notif-header" (click)="$event.stopPropagation()">
-          <strong>Notifications</strong>
+          <strong>Notificações</strong>
         </div>
         <mat-divider></mat-divider>
         <div *ngIf="notifications.length === 0" class="notif-empty" (click)="$event.stopPropagation()">
-          No notifications
+          Sem notificações
         </div>
         <div *ngFor="let n of notifications"
              class="notif-item"
@@ -65,7 +65,7 @@ import { Notification } from '../../../core/models/notification.model';
         <button mat-menu-item disabled>{{ userName }}</button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon> Logout
+          <mat-icon>logout</mat-icon> Sair
         </button>
       </mat-menu>
     </mat-toolbar>

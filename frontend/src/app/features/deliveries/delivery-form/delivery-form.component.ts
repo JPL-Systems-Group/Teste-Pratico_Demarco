@@ -27,7 +27,7 @@ import { DeliveryService } from '../../../core/services/delivery.service';
     <div class="page-container">
       <mat-toolbar color="primary">
         <button mat-icon-button routerLink="/orders"><mat-icon>arrow_back</mat-icon></button>
-        <span>Register Delivery</span>
+        <span>Registrar Entrega</span>
       </mat-toolbar>
 
       <div class="content">
@@ -35,24 +35,24 @@ import { DeliveryService } from '../../../core/services/delivery.service';
           <mat-card-content>
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Order Number</mat-label>
-                <input matInput formControlName="orderNumber" placeholder="e.g. ORD-001">
-                <mat-error>Required</mat-error>
+                <mat-label>Número do Pedido</mat-label>
+                <input matInput formControlName="orderNumber" placeholder="ex: ORD-001">
+                <mat-error>Obrigatório</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Delivery Date & Time</mat-label>
+                <mat-label>Data/Hora da Entrega</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="deliveredAt">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <mat-error>Required</mat-error>
+                <mat-error>Obrigatório</mat-error>
               </mat-form-field>
 
               <div class="actions">
-                <button mat-button type="button" routerLink="/orders">Cancel</button>
+                <button mat-button type="button" routerLink="/orders">Cancelar</button>
                 <button mat-raised-button color="primary" type="submit" [disabled]="loading">
                   <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-                  <span *ngIf="!loading">Register Delivery</span>
+                  <span *ngIf="!loading">Registrar Entrega</span>
                 </button>
               </div>
             </form>
@@ -99,12 +99,12 @@ export class DeliveryFormComponent {
 
     this.deliveryService.register(payload).subscribe({
       next: () => {
-        this.snackBar.open('Delivery registered successfully!', 'Close', { duration: 3000 });
+        this.snackBar.open('Entrega registrada com sucesso!', 'Fechar', { duration: 3000 });
         this.router.navigate(['/orders']);
       },
       error: (err) => {
         this.loading = false;
-        this.snackBar.open(err.error?.message || 'Failed to register delivery', 'Close', { duration: 3000 });
+        this.snackBar.open(err.error?.message || 'Falha ao registrar entrega', 'Fechar', { duration: 3000 });
       }
     });
   }
