@@ -39,7 +39,7 @@ public class DeliveriesController : ControllerBase
 
         _ = _notificationService.BroadcastEventAsync(
             NotificationType.DeliveryRegistered,
-            $"Order #{delivery.OrderNumber} has been delivered on {delivery.DeliveredAt:dd/MM/yyyy HH:mm}.",
+            $"Pedido #{delivery.OrderNumber} foi entregue em {delivery.DeliveredAt:dd/MM/yyyy HH:mm}.",
             delivery.OrderId);
 
         return CreatedAtAction(nameof(Register), delivery);

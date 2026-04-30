@@ -48,9 +48,9 @@ public class AuthService
             .Find(u => u.Email == request.Email.ToLower())
             .FirstOrDefaultAsync();
 
-        // Generic error message to avoid user enumeration attacks
+        // Mensagem genérica para evitar enumeração de usuários (user enumeration attack)
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Invalid credentials.");
+            throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
 
         return BuildAuthResponse(user);
     }

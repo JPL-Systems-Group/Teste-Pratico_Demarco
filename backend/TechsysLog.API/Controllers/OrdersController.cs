@@ -54,7 +54,7 @@ public class OrdersController : ControllerBase
         // Fire-and-forget notification; does not affect the response
         _ = _notificationService.BroadcastEventAsync(
             NotificationType.OrderCreated,
-            $"New order #{order.OrderNumber} has been registered.",
+            $"Novo pedido #{order.OrderNumber} foi registrado.",
             order.Id);
 
         return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
