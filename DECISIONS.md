@@ -104,4 +104,4 @@ Este documento descreve as principais decisões técnicas tomadas no projeto Tec
 
 **O que é:** Um arquivo `docker-compose.yml` na raiz do projeto sobe uma instância do MongoDB localmente com um único comando.
 
-**Por que foi adotado:** Elimina a necessidade de instalar o MongoDB diretamente na máquina do avaliador. Garante que o ambiente de banco de dados seja idêntico para qualquer pessoa que execute o projeto, evitando problemas de configuração.
+**Por que foi adotado:** Elimina a necessidade de instalar o MongoDB diretamente na máquina. Garante que o ambiente de banco de dados seja idêntico para qualquer pessoa que execute o projeto, evitando problemas de configuração.
