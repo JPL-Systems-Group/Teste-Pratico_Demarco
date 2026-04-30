@@ -57,9 +57,12 @@ import { OrderService } from '../../../core/services/order.service';
                 <div class="row">
                   <mat-form-field appearance="outline" class="col-small">
                     <mat-label>CEP</mat-label>
-                    <input matInput formControlName="cep" placeholder="00000-000">
+                    <!-- maxlength=9 allows NNNNN-NNN (8 digits + 1 dash per ViaCEP spec) -->
+                    <input matInput formControlName="cep" placeholder="00000-000"
+                           maxlength="9" (input)="onCepInput($event)">
                     <mat-hint *ngIf="cepLoading">Looking up CEP...</mat-hint>
-                    <mat-error>Invalid CEP format</mat-error>
+                    <mat-error *ngIf="form.get('address.cep')?.hasError('required')">Required</mat-error>
+                    <mat-error *ngIf="form.get('address.cep')?.hasError('pattern')">Invalid CEP (use 00000-000)</mat-error>
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="col-large">
                     <mat-label>Street</mat-label>
@@ -133,7 +136,7 @@ export class OrderFormComponent {
       description: ['', Validators.required],
       value: [null, [Validators.required, Validators.min(0.01)]],
       address: this.fb.group({
-        cep: ['', [Validators.required, Validators.pattern(/^\d{5}-?\d{3}$/)]],
+        cep: ['', [Validators.required, Validators.pattern(/^\d{5}-\d{3}$/)]],
         street: ['', Validators.required],
         number: ['', Validators.required],
         neighborhood: ['', Validators.required],
@@ -142,16 +145,26 @@ export class OrderFormComponent {
       })
     });
 
-    // Auto-fill address fields when a valid CEP is entered
+    // Trigger lookup after user stops typing for 400ms with a fully formatted CEP
     this.form.get('address.cep')!.valueChanges.pipe(
-      debounceTime(600),
+      debounceTime(400),
       distinctUntilChanged()
     ).subscribe(cep => this.lookupCep(cep));
   }
 
+  // Auto-formats digits as NNNNN-NNN while the user types
+  onCepInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    // Keep only digits
+    let digits = input.value.replace(/\D/g, '').slice(0, 8);
+    // Insert dash after the 5th digit
+    const formatted = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+    this.form.get('address.cep')!.setValue(formatted, { emitEvent: true });
+  }
+
   private lookupCep(cep: string): void {
-    const clean = cep?.replace('-', '');
-    if (clean?.length !== 8) return;
+    // Only proceed when the full NNNNN-NNN pattern is present
+    if (!cep || cep.length !== 9) return;
 
     this.cepLoading = true;
     this.orderService.getAddressByCep(cep).subscribe({

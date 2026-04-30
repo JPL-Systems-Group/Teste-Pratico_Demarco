@@ -3,26 +3,38 @@ using System.Text.Json.Serialization;
 
 namespace TechsysLog.API.Services;
 
-public class ViaCepResponse
+// Internal model used only to deserialize the ViaCEP API response.
+// [JsonPropertyName] here controls reading from ViaCEP, not the outbound response.
+internal class ViaCepApiResponse
 {
     [JsonPropertyName("cep")]
-    public string CEP { get; set; } = string.Empty;
+    public string Cep { get; set; } = string.Empty;
 
     [JsonPropertyName("logradouro")]
-    public string Street { get; set; } = string.Empty;
+    public string Logradouro { get; set; } = string.Empty;
 
     [JsonPropertyName("bairro")]
-    public string Neighborhood { get; set; } = string.Empty;
+    public string Bairro { get; set; } = string.Empty;
 
     [JsonPropertyName("localidade")]
-    public string City { get; set; } = string.Empty;
+    public string Localidade { get; set; } = string.Empty;
 
     [JsonPropertyName("uf")]
-    public string State { get; set; } = string.Empty;
+    public string Uf { get; set; } = string.Empty;
 
-    // ViaCEP returns "erro": true when CEP is not found
     [JsonPropertyName("erro")]
     public bool? Erro { get; set; }
+}
+
+// Public DTO returned to the Angular client.
+// Property names are serialized as camelCase by ASP.NET Core (cep, street, neighborhood, city, state).
+public class ViaCepResponse
+{
+    public string Cep { get; set; } = string.Empty;
+    public string Street { get; set; } = string.Empty;
+    public string Neighborhood { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
 }
 
 public class ViaCepService
@@ -38,8 +50,11 @@ public class ViaCepService
 
     public async Task<ViaCepResponse?> GetAddressByCepAsync(string cep)
     {
-        // Strip formatting; ViaCEP accepts only digits
+        // ViaCEP accepts only the 8 raw digits — strip dash and whitespace
         var cleanCep = cep.Replace("-", "").Trim();
+
+        if (cleanCep.Length != 8)
+            return null;
 
         try
         {
@@ -48,9 +63,19 @@ public class ViaCepService
                 return null;
 
             var content = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ViaCepResponse>(content);
+            var raw = JsonSerializer.Deserialize<ViaCepApiResponse>(content);
 
-            return result?.Erro == true ? null : result;
+            if (raw?.Erro == true)
+                return null;
+
+            return new ViaCepResponse
+            {
+                Cep = raw!.Cep,
+                Street = raw.Logradouro,
+                Neighborhood = raw.Bairro,
+                City = raw.Localidade,
+                State = raw.Uf
+            };
         }
         catch (Exception ex)
         {
