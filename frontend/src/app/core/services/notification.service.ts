@@ -16,7 +16,6 @@ export class NotificationService {
   private _unreadCount = new BehaviorSubject<number>(0);
   readonly unreadCount$ = this._unreadCount.asObservable();
 
-  // Emits real-time events received from SignalR (used to trigger order list refresh)
   private _liveEvent = new BehaviorSubject<SignalRNotification | null>(null);
   readonly liveEvent$ = this._liveEvent.asObservable();
 
@@ -33,7 +32,6 @@ export class NotificationService {
 
     this.hubConnection.on('ReceiveNotification', (payload: SignalRNotification) => {
       this._liveEvent.next(payload);
-      // Reload the full list to keep the store in sync
       this.loadNotifications();
     });
 

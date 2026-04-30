@@ -9,23 +9,19 @@ using TechsysLog.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Configuration ─────────────────────────────────────────────────────────────
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
-// ── MongoDB ───────────────────────────────────────────────────────────────────
 builder.Services.AddSingleton<MongoDbContext>();
 
-// ── Application Services ──────────────────────────────────────────────────────
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHttpClient<ViaCepService>();
 
-// ── JWT Authentication ────────────────────────────────────────────────────────
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -43,8 +39,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(jwtSettings.Secret))
         };
 
-        // DECISION: SignalR requires the JWT to be passed via query string
-        // because WebSocket connections cannot carry Authorization headers.
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -59,11 +53,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-
-// ── SignalR ───────────────────────────────────────────────────────────────────
 builder.Services.AddSignalR();
 
-// ── CORS ──────────────────────────────────────────────────────────────────────
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
                      ?? ["http://localhost:4200"];
 
@@ -73,10 +64,9 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials()); // Required for SignalR
+              .AllowCredentials());
 });
 
-// ── Controllers + Swagger ─────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -85,7 +75,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "TechsysLog API",
         Version = "v1",
-        Description = "Order and delivery control system for TechsysLog."
+        Description = "Sistema de controle de pedidos e entregas — TechsysLog."
     });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -95,7 +85,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter: Bearer {your token}"
+        Description = "Informe: Bearer {seu token}"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -114,7 +104,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ── Build ─────────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();

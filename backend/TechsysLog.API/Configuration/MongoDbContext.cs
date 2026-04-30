@@ -23,17 +23,14 @@ public class MongoDbContext
 
     private void EnsureIndexes()
     {
-        // Unique index on email prevents duplicate accounts
         var emailIndex = Builders<User>.IndexKeys.Ascending(u => u.Email);
         Users.Indexes.CreateOne(new CreateIndexModel<User>(emailIndex,
             new CreateIndexOptions { Unique = true }));
 
-        // Unique index on orderNumber prevents duplicate order entries
         var orderNumberIndex = Builders<Order>.IndexKeys.Ascending(o => o.OrderNumber);
         Orders.Indexes.CreateOne(new CreateIndexModel<Order>(orderNumberIndex,
             new CreateIndexOptions { Unique = true }));
 
-        // Compound index to quickly fetch notifications per user sorted by date
         var notifIndex = Builders<Notification>.IndexKeys
             .Ascending(n => n.UserId)
             .Descending(n => n.CreatedAt);

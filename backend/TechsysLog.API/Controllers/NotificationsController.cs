@@ -18,10 +18,6 @@ public class NotificationsController : ControllerBase
         _notificationService = notificationService;
     }
 
-    /// <summary>
-    /// Returns all notifications for the authenticated user, sorted by date descending.
-    /// This serves as the notification log required by the specification.
-    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(List<NotificationResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMyNotifications()
@@ -33,10 +29,6 @@ public class NotificationsController : ControllerBase
         return Ok(notifications);
     }
 
-    /// <summary>
-    /// Mark a notification as read and log the timestamp.
-    /// Satisfies: "manter um log das notificações que já foram abertas por cada usuário".
-    /// </summary>
     [HttpPatch("{id}/read")]
     [ProducesResponseType(typeof(NotificationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

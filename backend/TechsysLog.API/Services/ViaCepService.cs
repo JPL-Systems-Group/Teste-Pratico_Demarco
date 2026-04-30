@@ -3,8 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace TechsysLog.API.Services;
 
-// Internal model used only to deserialize the ViaCEP API response.
-// [JsonPropertyName] here controls reading from ViaCEP, not the outbound response.
 internal class ViaCepApiResponse
 {
     [JsonPropertyName("cep")]
@@ -26,8 +24,6 @@ internal class ViaCepApiResponse
     public bool? Erro { get; set; }
 }
 
-// Public DTO returned to the Angular client.
-// Property names are serialized as camelCase by ASP.NET Core (cep, street, neighborhood, city, state).
 public class ViaCepResponse
 {
     public string Cep { get; set; } = string.Empty;
@@ -50,7 +46,6 @@ public class ViaCepService
 
     public async Task<ViaCepResponse?> GetAddressByCepAsync(string cep)
     {
-        // ViaCEP accepts only the 8 raw digits — strip dash and whitespace
         var cleanCep = cep.Replace("-", "").Trim();
 
         if (cleanCep.Length != 8)

@@ -9,11 +9,6 @@ public enum NotificationType
     DeliveryRegistered = 1
 }
 
-// DECISION: One Notification document is created PER USER for each event
-// (order created, delivery registered). This simplifies queries ("give me my notifications")
-// at the cost of storing N copies per event (acceptable for this scale).
-// An alternative would be a shared Notification + a UserNotificationRead join collection,
-// which would be preferred at larger scale.
 public class Notification
 {
     [BsonId]
@@ -29,15 +24,12 @@ public class Notification
     [BsonElement("message")]
     public string Message { get; set; } = string.Empty;
 
-    // ReferenceId points to the Order or Delivery that triggered this notification.
     [BsonElement("referenceId")]
     public string ReferenceId { get; set; } = string.Empty;
 
     [BsonElement("isRead")]
     public bool IsRead { get; set; } = false;
 
-    // ReadAt is the timestamp logged when the user opens/reads the notification.
-    // This satisfies the requirement: "manter um log das notificações que já foram abertas".
     [BsonElement("readAt")]
     public DateTime? ReadAt { get; set; }
 

@@ -21,7 +21,6 @@ public class OrdersController : ControllerBase
         _notificationService = notificationService;
     }
 
-    /// <summary>List all orders sorted by creation date (descending).</summary>
     [HttpGet]
     [ProducesResponseType(typeof(List<OrderResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
@@ -30,7 +29,6 @@ public class OrdersController : ControllerBase
         return Ok(orders);
     }
 
-    /// <summary>Get a single order by its internal ID.</summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,7 +38,6 @@ public class OrdersController : ControllerBase
         return order is null ? NotFound() : Ok(order);
     }
 
-    /// <summary>Create a new order. Triggers a real-time notification to all connected users.</summary>
     [HttpPost]
     [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -51,7 +48,6 @@ public class OrdersController : ControllerBase
 
         var order = await _orderService.CreateAsync(request, userId);
 
-        // Fire-and-forget notification; does not affect the response
         _ = _notificationService.BroadcastEventAsync(
             NotificationType.OrderCreated,
             $"Novo pedido #{order.OrderNumber} foi registrado.",

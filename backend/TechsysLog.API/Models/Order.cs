@@ -3,9 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace TechsysLog.API.Models;
 
-// DECISION: OrderStatus is kept intentionally minimal (Pending / Delivered)
-// to match the two operations described in the requirements: create order and register delivery.
-// A richer state machine (e.g. InTransit, Cancelled) is reserved for future iterations.
 public enum OrderStatus
 {
     Pending = 0,
@@ -39,8 +36,6 @@ public class Order
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
-    // DECISION: OrderNumber is user-provided (as listed in the form fields),
-    // unique across the collection (enforced via MongoDB index in MongoDbContext).
     [BsonElement("orderNumber")]
     public string OrderNumber { get; set; } = string.Empty;
 
@@ -56,7 +51,6 @@ public class Order
     [BsonElement("address")]
     public Address Address { get; set; } = new();
 
-    // DECISION: CreatedBy stores the userId of the authenticated user who created the order.
     [BsonElement("createdBy")]
     public string CreatedBy { get; set; } = string.Empty;
 

@@ -15,7 +15,6 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    /// <summary>Register a new user account.</summary>
     [HttpPost("register")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -25,7 +24,6 @@ public class AuthController : ControllerBase
         return CreatedAtAction(nameof(Register), response);
     }
 
-    /// <summary>Authenticate and receive a JWT token.</summary>
     [HttpPost("login")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
